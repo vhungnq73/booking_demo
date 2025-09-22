@@ -1,0 +1,2 @@
+org.springframework.boot.env.EnvironmentPostProcessor=common.lib.vtrip.infrastructure.datasource.properties.processor.ExternalConfigPostProcessor
+common.lib.vtrip.infrastructure.datasource.properties.mapper.IExternalConfigMappingProvider=your_company_name.your_project_name.your_module_name.config.mapper.CustomExternalConfigMapping

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="company-java-rules"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0
+                             https://pmd.github.io/pmd-7.0.0/ruleset_2_0_0.xsd">
+
+    <description>Company Java Rules</description>
+
+    <!-- Best practices -->
+    <rule ref="category/java/bestpractices.xml"/>
+
+    <!-- Code style -->
+    <rule ref="category/java/codestyle.xml"/>
+
+    <!-- Error prone -->
+    <rule ref="category/java/errorprone.xml"/>
+
+    <!-- Performance -->
+    <rule ref="category/java/performance.xml"/>
+
+    <!-- Security -->
+    <rule ref="category/java/security.xml"/>
+
+    <!-- Package naming convention -->
+    <rule ref="category/java/codestyle.xml/PackageCase"/>
+</ruleset>

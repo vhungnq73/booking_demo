@@ -1,0 +1,19 @@
+
+CREATE TABLE IF NOT EXISTS product (
+  id BIGSERIAL PRIMARY KEY,
+  sku VARCHAR(64) UNIQUE NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  price NUMERIC(15,2) NOT NULL,
+  stock INT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS customer_order (
+  id BIGSERIAL PRIMARY KEY,
+  created_at TIMESTAMPTZ NOT NULL
+);
+CREATE TABLE IF NOT EXISTS order_item (
+  id BIGSERIAL PRIMARY KEY,
+  order_id BIGINT NOT NULL REFERENCES customer_order(id),
+  product_id BIGINT NOT NULL REFERENCES product(id),
+  quantity INT NOT NULL,
+  unit_price NUMERIC(15,2) NOT NULL
+);

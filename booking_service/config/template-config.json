@@ -1,0 +1,6 @@
+[
+  { "key": "app_name1", "value": "MyExternalApp" },
+  { "key": "app_greeting1", "value": "Hello from external config" },
+  { "key": "kafka_topic_ops_front_office_reservation", "value": "dev_kafka_topic_ops_front_office_reservation"},
+  { "key": "kafka_topic_ops_transaction_account_transaction_account_create", "value": "dev_kafka_topic_ops_transaction_account_transaction_account_create"}
+]

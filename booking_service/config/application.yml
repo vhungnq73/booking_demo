@@ -1,0 +1,112 @@
+app:
+  name: MyLocalApp
+  greeting: "Hello from local config"
+thread-pool:
+  core-size: 5
+  max-size: 5
+  queue-capacity: 1000
+  name: AsyncThread
+spring:
+  data:
+    redis:
+      cluster:
+        nodes: redis.cache.dev.cloudhms.io:6379
+      host: redis.cache.dev.cloudhms.io
+      port: 6379
+      keyPrefix: 'vtrip-project-template:'
+  kafka:
+    retry-period-second: 3
+    prefix-key: 'dev'
+    consume-topics:
+      kafka_topic_ops_front_office_reservation: dev_kafka_topic_ops_front_office_reservation
+      kafka_topic_ops_front_office_reservation_update: dev_kafka_topic_ops_front_office_reservation_update
+      kafka_topic_ops_front_office_reservation_update_rate: dev_kafka_topic_ops_front_office_reservation_update_rate
+      kafka_topic_ops_front_office_link_profile_to_reservation: dev_kafka_topic_ops_front_office_link_profile_to_reservation
+      kafka_topic_ops_front_office_add_profile_to_reservation: dev_kafka_topic_ops_front_office_add_profile_to_reservation
+      kafka_topic_ops_front_office_update_profile_in_reservation: dev_kafka_topic_ops_front_office_update_profile_in_reservation
+      kafka_topic_ops_front_office_check_out: dev_kafka_topic_ops_front_office_check_out
+      kafka_topic_ops_front_office_room_assignment: dev_kafka_topic_ops_front_office_room_assignment
+      kafka_topic_ops_front_office_room_unassignment: dev_kafka_topic_ops_front_office_room_unassignment
+      kafka_topic_ops_front_office_reservation_status: dev_kafka_topic_ops_front_office_reservation_status
+      kafka_topic_ops_flash_manager_report_init: dev_kafka_topic_ops_flash_manager_report_init
+      kafka_topic_ops_front_office_pre_na_flash_manager_report_init: dev_kafka_topic_ops_front_office_pre_na_flash_manager_report_init
+      kafka_topic_ops_front_office_reservation_payment_method: dev_kafka_topic_ops_front_office_reservation_payment_method
+      kafka_topic_ops_front_office_reservation_no_post_change: dev_kafka_topic_ops_front_office_reservation_no_post_change
+      kafka_topic_ops_end_of_day_trigger_report: dev_kafka_topic_ops_end_of_day_trigger_report
+      kafka_topic_ops_front_office_main_guest_change: dev_kafka_topic_ops_front_office_main_guest_change
+      kafka_topic_ops_transaction_account_article_update: dev_kafka_topic_ops_transaction_account_article_update
+      kafka_topic_ops_transaction_account_article_delete: dev_kafka_topic_ops_transaction_account_article_delete
+      kafka_topic_ops_front_office_task_create: dev_kafka_topic_ops_front_office_task_create
+    produce-topics:
+      kafka_topic_ops_transaction_account_transaction_account_create: dev_kafka_topic_ops_transaction_account_transaction_account_create
+      kafka_topic_ops_transaction_account_transaction_account_update: dev_kafka_topic_ops_transaction_account_transaction_account_update
+      kafka_topic_ops_transaction_account_transaction_account_delete: dev_kafka_topic_ops_transaction_account_transaction_account_delete
+      kafka_topic_ops_transaction_account_reservation_revenue: dev_kafka_topic_ops_transaction_account_reservation_revenue
+      kafka_topic_ops_transaction_account_reservation_revenue_forecast_by_room_type: dev_kafka_topic_ops_transaction_account_reservation_revenue_forecast_by_room_type
+      kafka_topic_ops_activity_log_create_log: dev_kafka_topic_ops_activity_log_create_log
+      kafka_topic_ops_flash_manager_report_data: dev_kafka_topic_ops_flash_manager_report_data
+      kafka_topic_ops_front_office_pre_na_flash_manager_report_data: dev_kafka_topic_ops_front_office_pre_na_flash_manager_report_data
+      kafka_topic_ops_end_of_day_report: dev_kafka_topic_ops_end_of_day_report
+      kafka_topic_ops_transaction_account_package_break_finished: dev_kafka_topic_ops_transaction_account_package_break_finished
+      kafka_topic_ops_front_office_reservation_mark_close_bill: dev_kafka_topic_ops_front_office_reservation_mark_close_bill
+      kafka_topic_ops_transaction_account_e_invoice_update: dev_kafka_topic_ops_transaction_account_e_invoice_update
+      kafka_topic_ops_transaction_account_e_invoice_create: dev_kafka_topic_ops_transaction_account_e_invoice_create
+      kafka_topic_ops_front_office_task_result: dev_kafka_topic_ops_front_office_task_result
+      kafka_topic_ops_transaction_account_calculate_folio_amount: dev_kafka_topic_ops_transaction_account_calculate_folio_amount
+    consumer:
+      group-id: dev_ops_transaction_account
+      auto-offset-reset: earliest
+    bootstrap-servers: kafka-1.dev.cloudhms.io:9092, kafka-2.dev.cloudhms.io:9092, kafka-3.dev.cloudhms.io:9092
+
+  ### Database Configuration
+  ### https://github.com/brettwooldridge/HikariCP
+  ### Supported source-type values: postgresql, mysql
+  datasource:
+    source-type: postgresql
+    postgresql:
+      write:
+        host: postgres-1-writer.db.dev.hulk.cloudhms.io
+        port: 5432
+        database: staging
+        username: pg1-writer
+        password: zlmC0tCYkBqgf5cZxpOF
+        pool-name: write
+        max-lifetime: 1800000
+        idle-timeout: 300000
+        connection-timeout: 30000
+        maximum-pool-size : 10
+        schema: template
+      read:
+        host: postgres-1-reader.db.dev.hulk.cloudhms.io
+        port: 5432
+        database: staging
+        username: pg1-reader
+        password: oQpxqLEdvqFSfVfwrfQb
+        pool-name: read
+        schema: template
+        read-only: true
+  jpa:
+    open-in-view: false
+    show-sql: true
+
+
+
+
+# --- booking service defaults for local dev ---
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/booking_db
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql

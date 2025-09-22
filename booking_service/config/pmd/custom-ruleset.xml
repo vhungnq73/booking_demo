@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<ruleset name="Custom Ruleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0
+                             https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+        Custom ruleset that uses PMD's defaults but ignores AtLeastOneConstructor.
+    </description>
+
+    <rule ref="category/java/codestyle.xml">
+        <!-- Exclude the rule we don't want -->
+        <exclude name="AtLeastOneConstructor"/>
+        <exclude name="OnlyOneReturn"/>
+        <exclude name="ShortVariable"/>
+        <exclude name="LongVariable"/>
+    </rule>
+    <rule ref="category/java/design.xml">
+        <!-- Exclude the rule we don't want -->
+        <exclude name="UseUtilityClass"/>
+    </rule>
+    <rule ref="category/java/design.xml/TooManyMethods">
+        <properties>
+            <property name="maxmethods" value="15" />
+        </properties>
+    </rule>
+
+    <!-- Import other categories -->
+    <rule ref="category/java/errorprone.xml"/>
+    <rule ref="category/java/bestpractices.xml"/>
+    <rule ref="category/java/performance.xml"/>
+    <rule ref="category/java/multithreading.xml"/>
+    <rule ref="category/java/security.xml"/>
+
+</ruleset>

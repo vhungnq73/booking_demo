@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: booking_service
+
+  datasource:
+    # ép Spring Boot dùng CommonDataSource
+    type: common.lib.vtrip.infrastructure.datasource.persistence.datasources.CommonDataSource
+
+    # chọn Postgres thay vì MySQL
+    source-type: postgresql
+
+    postgresql:
+      write:
+        type: POSTGRESQL
+        host: localhost
+        port: 5432
+        database: booking_db
+        username: postgres
+        password: postgres
+        options: stringtype=unspecified
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+external:
+  config:
+    provider: file
+    namespace: booking-service
+
+server:
+  port: 8080
