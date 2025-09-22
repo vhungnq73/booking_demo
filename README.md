@@ -5,7 +5,7 @@ Booking demo project for IntelliJ test
 ## Quick Start
 ```bash
 docker compose up -d
-mvn -DskipTests package
+mvn clean install
 cd booking_service
 mvn spring-boot:run
 
@@ -25,12 +25,13 @@ API Endpoints:
 - POST /api/bookings – Tạo booking mới
 
 - GET /api/bookings/{id} – Xem chi tiết booking
-- 
-Ví Dụ Request:
-```bash
-POST /api/products
-Content-Type: application/json
 
+Ví Dụ Request:
+
+POST POST http://localhost:8080/api/products
+
+Content-Type: application/json
+```bash
 {
 "name": "Vinpearl Nha Trang Resort",
 "description": "Phòng nghỉ view biển, bao gồm buffet sáng",
@@ -41,7 +42,7 @@ Content-Type: application/json
 ```
 PMD is enabled (maven-pmd-plugin). Logging JSON + X-Request-ID configured.
 
-# booking_demo
+# booking_demo (localhost:8080)
 Booking demo project for IntelliJ test
 6a6d74989bdae32a577b9dc354ac6362a8c409e9
     
