@@ -16,37 +16,33 @@ public class ReservationKafkaConsumer {
     @KafkaListener(
             topics = "dev_kafka_topic_ops_front_office_reservation",
             groupId = "dev_ops_transaction_account",
-            containerFactory="autoCommitListenerFactory",
+            containerFactory = "autoCommitFactory",   // ✅ khớp bean trong KafkaConfig
             concurrency = "3"
     )
     public void consumeReservation(final Map<String, Object> message) {
-        if (log.isInfoEnabled()) {
-            log.info("Received reservation event auto commit: {}", message);
+        if (message == null || message.isEmpty()) {
+            log.warn("Received empty reservation event (auto commit)");
+            return;
         }
+        log.info("Received reservation event auto commit: {}", message);
     }
 
     @KafkaListener(
             topics = "dev_kafka_topic_ops_front_office_reservation_update",
             groupId = "dev_ops_transaction_account",
-            containerFactory="manualCommitListenerFactory",
+            containerFactory = "manualCommitFactory",  // ✅ khớp bean trong KafkaConfig
             concurrency = "2"
     )
-    /*@RetryableTopic(
-            attempts = "3",
-            backoff = @Backoff(delay = 1000, multiplier = 2.0),
-            dltTopicSuffix = "_dlt",
-            autoCreateTopics = "false"
-    )*/
     public void consumeReservationUpdate(@Payload final Object message, final Acknowledgment acknowledgment) {
+        if (message == null) {
+            log.warn("Received null update reservation event (manual commit)");
+            return;
+        }
         try {
-            if (log.isInfoEnabled()) {
-                log.info("Received update reservation event manual commit: {}", message);
-            }
-            // commit offset
+            log.info("Received update reservation event manual commit: {}", message);
             acknowledgment.acknowledge();
-
-        } catch (KafkaException e) {
-            log.error("Error processing message", e);
+        } catch (final KafkaException ex) {
+            log.error("Error processing reservation update event: {}", message, ex);
         }
     }
 }

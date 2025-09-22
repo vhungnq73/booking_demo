@@ -15,7 +15,30 @@ Services:
 - Postgres: localhost:5432 / booking_db / postgres / postgres
 - Kafka (Redpanda): localhost:9092
 - Redis: localhost:6379
+  
+API Endpoints:
 
+- POST /api/products – Thêm sản phẩm mới
+
+- GET /api/products?q= – Tìm kiếm sản phẩm
+
+- POST /api/bookings – Tạo booking mới
+
+- GET /api/bookings/{id} – Xem chi tiết booking
+- 
+Ví Dụ Request:
+```bash
+POST /api/products
+Content-Type: application/json
+
+{
+"name": "Vinpearl Nha Trang Resort",
+"description": "Phòng nghỉ view biển, bao gồm buffet sáng",
+"price": 2500000,
+"stock": 10,
+"sku": "VINPEARL-NT-004"
+}
+```
 PMD is enabled (maven-pmd-plugin). Logging JSON + X-Request-ID configured.
 
 # booking_demo
