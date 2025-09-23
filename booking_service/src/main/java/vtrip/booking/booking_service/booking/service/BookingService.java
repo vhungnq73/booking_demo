@@ -8,7 +8,8 @@ import vtrip.booking.booking_service.booking.OrderItem;
 import vtrip.booking.booking_service.booking.Product;
 import vtrip.booking.booking_service.booking.repository.OrderRepository;
 import vtrip.booking.booking_service.booking.repository.ProductRepository;
-import common.lib.vtrip.infrastructure.datasource.cache.provider.IRedisCacheProvider; // dùng trực tiếp provider
+import common.lib.vtrip.infrastructure.datasource.cache.provider.IRedisCacheProvider;
+import vtrip.booking.booking_service.client.ExternalApiClient;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -19,53 +20,55 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class BookingService {
+
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
-    private final IRedisCacheProvider redisCache; // dùng trực tiếp provider
+    private final IRedisCacheProvider redisCache;
+    private final ExternalApiClient externalApiClient;
 
     @Transactional
-    public Product addProduct(String sku, String name, BigDecimal price, int stock) {
-        Product p = Product.builder()
+    public Product addProduct(final String sku, final String name, final BigDecimal price, final int stock) {
+        Product product = Product.builder()
                 .sku(sku)
                 .name(name)
                 .price(price)
                 .stock(stock)
                 .build();
-        return productRepository.save(p);
+        return productRepository.save(product);
     }
 
-    public List<Product> searchProducts(String q) {
-        if (q == null || q.isBlank()) {
+    public List<Product> searchProducts(final String query) {
+        if (query == null || query.isBlank()) {
             return productRepository.findAll();
         }
-        return productRepository.findByNameContainingIgnoreCase(q);
+        return productRepository.findByNameContainingIgnoreCase(query);
     }
 
     @Transactional
-    public CustomerOrder book(Map<String, Integer> itemsBySku) {
+    public CustomerOrder book(final Map<String, Integer> itemsBySku) {
         List<OrderItem> items = new ArrayList<>();
         CustomerOrder order = CustomerOrder.builder()
                 .createdAt(OffsetDateTime.now())
                 .items(items)
                 .build();
 
-        for (Map.Entry<String, Integer> e : itemsBySku.entrySet()) {
-            Product p = productRepository.findBySku(e.getKey())
-                    .orElseThrow(() -> new IllegalArgumentException("SKU not found: " + e.getKey()));
+        for (Map.Entry<String, Integer> entry : itemsBySku.entrySet()) {
+            Product product = productRepository.findBySku(entry.getKey())
+                    .orElseThrow(() -> new IllegalArgumentException("SKU not found: " + entry.getKey()));
 
-            int qty = e.getValue();
-            if (p.getStock() < qty) {
-                throw new IllegalArgumentException("Insufficient stock for " + p.getSku());
+            int quantity = entry.getValue();
+            if (product.getStock() < quantity) {
+                throw new IllegalArgumentException("Insufficient stock for " + product.getSku());
             }
 
-            p.setStock(p.getStock() - qty);
-            OrderItem it = OrderItem.builder()
+            product.setStock(product.getStock() - quantity);
+            OrderItem orderItem = OrderItem.builder()
                     .order(order)
-                    .product(p)
-                    .quantity(qty)
-                    .unitPrice(p.getPrice())
+                    .product(product)
+                    .quantity(quantity)
+                    .unitPrice(product.getPrice())
                     .build();
-            items.add(it);
+            items.add(orderItem);
         }
 
         // Lưu metric vào Redis
@@ -74,7 +77,14 @@ public class BookingService {
         return orderRepository.save(order);
     }
 
-    public CustomerOrder getOrder(long id) {
-        return orderRepository.findById(id).orElseThrow();
+    public CustomerOrder getOrder(final long id) {
+        return orderRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Order not found with id: " + id)
+        );
+    }
+
+    // Demo gọi external API
+    public String demoApiClientCall(final String id) {
+        return externalApiClient.getExampleData(id);
     }
 }

@@ -16,27 +16,35 @@ import java.util.List;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class BookingController {
+
     private final BookingService bookingService;
 
     @PostMapping("/products")
-    public ResponseEntity<Product> addProduct(@RequestBody AddProductRequest req) {
-        Product p = bookingService.addProduct(req.sku(), req.name(), req.price(), req.stock());
-        return ResponseEntity.created(URI.create("/api/products/" + p.getId())).body(p);
+    public ResponseEntity<Product> addProduct(@RequestBody final AddProductRequest req) {
+        Product product = bookingService.addProduct(req.sku(), req.name(), req.price(), req.stock());
+        return ResponseEntity.created(URI.create("/api/products/" + product.getId())).body(product);
     }
 
     @GetMapping("/products")
-    public List<Product> search(@RequestParam(name="search", required = false) String q) {
-        return bookingService.searchProducts(q);
+    public List<Product> search(@RequestParam(name = "search", required = false) final String query) {
+        return bookingService.searchProducts(query);
     }
 
     @PostMapping("/bookings")
-    public ResponseEntity<CustomerOrder> book(@RequestBody BookRequest req) {
-        CustomerOrder o = bookingService.book(req.items());
-        return ResponseEntity.created(URI.create("/api/orders/" + o.getId())).body(o);
+    public ResponseEntity<CustomerOrder> book(@RequestBody final BookRequest req) {
+        CustomerOrder order = bookingService.book(req.items());
+        return ResponseEntity.created(URI.create("/api/orders/" + order.getId())).body(order);
     }
 
     @GetMapping("/orders/{id}")
-    public CustomerOrder get(@PathVariable long id) {
+    public CustomerOrder get(@PathVariable final long id) {
         return bookingService.getOrder(id);
+    }
+
+    // ✅ Endpoint test ExternalApiClient
+    @GetMapping("/external-test/{id}")
+    public ResponseEntity<String> testExternalApi(@PathVariable final String id) {
+        String response = bookingService.demoApiClientCall(id);
+        return ResponseEntity.ok(response);
     }
 }
