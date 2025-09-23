@@ -28,7 +28,7 @@ API Endpoints:
 
 Ví Dụ Request:
 
-POST POST http://localhost:8080/api/products
+POST http://localhost:8080/api/products
 
 Content-Type: application/json
 ```bash
