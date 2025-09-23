@@ -12,19 +12,20 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CacheService {
+
     private final IRedisCacheProvider redisCache;
 
-    public void set(String key, String value, long ttlSeconds) {
+    public void set(final String key, final String value, final long ttlSeconds) {
         redisCache.set(key, value, ttlSeconds);
     }
 
-    public Optional<String> get(String key) {
+    public Optional<String> get(final String key) {
         // Giả sử IRedisCacheProvider.get cần 2 tham số: key + class type
-        String val = redisCache.get(key, String.class);
+        final String val = redisCache.get(key, String.class);
         return Optional.ofNullable(val);
     }
 
-    public void delete(String key) {
+    public void delete(final String key) {
         redisCache.delete(key);
     }
 }

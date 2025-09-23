@@ -8,8 +8,8 @@ import vtrip.booking.booking_service.booking.OrderItem;
 import vtrip.booking.booking_service.booking.Product;
 import vtrip.booking.booking_service.booking.repository.OrderRepository;
 import vtrip.booking.booking_service.booking.repository.ProductRepository;
-import common.lib.vtrip.infrastructure.datasource.cache.provider.IRedisCacheProvider;
 import vtrip.booking.booking_service.client.ExternalApiClient;
+import common.lib.vtrip.infrastructure.datasource.cache.provider.IRedisCacheProvider;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -17,6 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Service class for handling booking operations:
+ * - Add/search products
+ * - Create orders
+ * - Get order details
+ * - Call external APIs
+ */
 @Service
 @RequiredArgsConstructor
 public class BookingService {
@@ -26,9 +33,12 @@ public class BookingService {
     private final IRedisCacheProvider redisCache;
     private final ExternalApiClient externalApiClient;
 
+    /**
+     * Add new product
+     */
     @Transactional
     public Product addProduct(final String sku, final String name, final BigDecimal price, final int stock) {
-        Product product = Product.builder()
+        final Product product = Product.builder()
                 .sku(sku)
                 .name(name)
                 .price(price)
@@ -37,6 +47,9 @@ public class BookingService {
         return productRepository.save(product);
     }
 
+    /**
+     * Search product by name (case insensitive)
+     */
     public List<Product> searchProducts(final String query) {
         if (query == null || query.isBlank()) {
             return productRepository.findAll();
@@ -44,25 +57,28 @@ public class BookingService {
         return productRepository.findByNameContainingIgnoreCase(query);
     }
 
+    /**
+     * Book products and create order
+     */
     @Transactional
     public CustomerOrder book(final Map<String, Integer> itemsBySku) {
-        List<OrderItem> items = new ArrayList<>();
-        CustomerOrder order = CustomerOrder.builder()
+        final List<OrderItem> items = new ArrayList<>();
+        final CustomerOrder order = CustomerOrder.builder()
                 .createdAt(OffsetDateTime.now())
                 .items(items)
                 .build();
 
         for (Map.Entry<String, Integer> entry : itemsBySku.entrySet()) {
-            Product product = productRepository.findBySku(entry.getKey())
+            final Product product = productRepository.findBySku(entry.getKey())
                     .orElseThrow(() -> new IllegalArgumentException("SKU not found: " + entry.getKey()));
 
-            int quantity = entry.getValue();
+            final int quantity = entry.getValue();
             if (product.getStock() < quantity) {
                 throw new IllegalArgumentException("Insufficient stock for " + product.getSku());
             }
 
             product.setStock(product.getStock() - quantity);
-            OrderItem orderItem = OrderItem.builder()
+            final OrderItem orderItem = OrderItem.builder()
                     .order(order)
                     .product(product)
                     .quantity(quantity)
@@ -71,19 +87,24 @@ public class BookingService {
             items.add(orderItem);
         }
 
-        // Lưu metric vào Redis
+        // save metric to Redis
         redisCache.set("booking:last_order_size", String.valueOf(items.size()), 300L);
 
         return orderRepository.save(order);
     }
 
-    public CustomerOrder getOrder(final long id) {
-        return orderRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Order not found with id: " + id)
+    /**
+     * Get order by id
+     */
+    public CustomerOrder getOrder(final long orderId) {
+        return orderRepository.findById(orderId).orElseThrow(
+                () -> new IllegalArgumentException("Order not found with id: " + orderId)
         );
     }
 
-    // Demo gọi external API
+    /**
+     * Example calling external API
+     */
     public String demoApiClientCall(final String id) {
         return externalApiClient.getExampleData(id);
     }

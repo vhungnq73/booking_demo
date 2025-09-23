@@ -3,6 +3,7 @@ package vtrip.booking.booking_service.booking;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,5 +31,6 @@ public class CustomerOrder {
             fetch = FetchType.EAGER
     )
     @JsonManagedReference
+    @Builder.Default  // Giữ mặc định ArrayList khi không truyền từ builder
     private List<OrderItem> items = new ArrayList<>();
 }

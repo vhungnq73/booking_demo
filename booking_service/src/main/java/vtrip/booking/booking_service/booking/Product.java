@@ -7,8 +7,14 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "product")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@SuppressWarnings({"PMD.ShortVariable"}) // id là chuẩn trong JPA
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

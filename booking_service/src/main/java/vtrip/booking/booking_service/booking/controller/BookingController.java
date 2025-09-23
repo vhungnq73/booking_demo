@@ -21,7 +21,7 @@ public class BookingController {
 
     @PostMapping("/products")
     public ResponseEntity<Product> addProduct(@RequestBody final AddProductRequest req) {
-        Product product = bookingService.addProduct(req.sku(), req.name(), req.price(), req.stock());
+        final Product product = bookingService.addProduct(req.sku(), req.name(), req.price(), req.stock());
         return ResponseEntity.created(URI.create("/api/products/" + product.getId())).body(product);
     }
 
@@ -32,19 +32,19 @@ public class BookingController {
 
     @PostMapping("/bookings")
     public ResponseEntity<CustomerOrder> book(@RequestBody final BookRequest req) {
-        CustomerOrder order = bookingService.book(req.items());
+        final CustomerOrder order = bookingService.book(req.items());
         return ResponseEntity.created(URI.create("/api/orders/" + order.getId())).body(order);
     }
 
     @GetMapping("/orders/{id}")
-    public CustomerOrder get(@PathVariable final long id) {
-        return bookingService.getOrder(id);
+    public CustomerOrder get(@PathVariable("id") final long orderId) {
+        return bookingService.getOrder(orderId);
     }
 
-    // ✅ Endpoint test ExternalApiClient
+    // Endpoint test ExternalApiClient
     @GetMapping("/external-test/{id}")
-    public ResponseEntity<String> testExternalApi(@PathVariable final String id) {
-        String response = bookingService.demoApiClientCall(id);
+    public ResponseEntity<String> testExternalApi(@PathVariable("id") final String resourceId) {
+        final String response = bookingService.demoApiClientCall(resourceId);
         return ResponseEntity.ok(response);
     }
 }

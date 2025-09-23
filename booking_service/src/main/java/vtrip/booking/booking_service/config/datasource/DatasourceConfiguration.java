@@ -7,4 +7,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 public class DatasourceConfiguration {
 
+    //  Default constructor để pass PMD AtLeastOneConstructor
+    public DatasourceConfiguration() {
+        // no-op
+    }
 }
