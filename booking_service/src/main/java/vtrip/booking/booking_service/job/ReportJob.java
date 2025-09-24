@@ -10,17 +10,26 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 public class ReportJob {
+
+    // constructor mặc định để pass AtLeastOneConstructor
+    @SuppressWarnings("PMD.UnnecessaryConstructor")
+    public ReportJob() {
+        super();
+    }
+
     @Scheduled(fixedRate = 5, timeUnit = TimeUnit.MINUTES)
     public void generateReport() {
-        if(log.isInfoEnabled()) {
-            log.info("{} - generateReport() running", LocalDateTime.now());
+        if (log.isInfoEnabled()) {
+            final LocalDateTime now = LocalDateTime.now();
+            log.info("{} - generateReport() running", now);
         }
     }
 
     @Scheduled(cron = "0 */5 * * * *")
     public void cleanUp() {
-        if(log.isInfoEnabled()) {
-            log.info("{} - cleanUp() running", LocalDateTime.now());
+        if (log.isInfoEnabled()) {
+            final LocalDateTime now = LocalDateTime.now();
+            log.info("{} - cleanUp() running", now);
         }
     }
 }

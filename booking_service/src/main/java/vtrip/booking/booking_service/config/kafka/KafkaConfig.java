@@ -9,7 +9,7 @@ import org.springframework.kafka.listener.ContainerProperties;
 @Configuration
 public class KafkaConfig {
 
-    // constructor mặc định để pass AtLeastOneConstructor
+    @SuppressWarnings("PMD.UnnecessaryConstructor")
     public KafkaConfig() {
         // default constructor
     }

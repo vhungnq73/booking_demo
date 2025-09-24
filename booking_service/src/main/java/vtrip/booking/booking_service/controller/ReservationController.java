@@ -13,33 +13,35 @@ public class ReservationController implements IReservationOperation {
     private final ReservationKafkaProducer producer;
     private final WakeupCallJob wakeupCallJob;
 
+    @Override
     public String publishReservation(
-            final @PathVariable String id,
+            final @PathVariable String reservationId,
             final @RequestBody Object payload
     ) {
-        producer.sendReservationEvent(id, payload);
-        return "Published reservation " + id;
+        producer.sendReservationEvent(reservationId, payload);
+        return "Published reservation " + reservationId;
     }
 
     @Override
     public String updateReservation(
-        final @PathVariable String id,
-        final @RequestBody Object payload
+            final @PathVariable String reservationId,
+            final @RequestBody Object payload
     ) {
-            producer.sendReservationUpdateEvent(id, payload);
-            return "Published update reservation " + id;
-        }
-
-    @Override
-    public String getReservation(final String id) {
-        return id;
+        producer.sendReservationUpdateEvent(reservationId, payload);
+        return "Published update reservation " + reservationId;
     }
 
     @Override
-    public String wakeupCall(final String id) {
-        for (int i = 1; i <= 5; i++) {
-            wakeupCallJob.runAsyncJob(i);
+    public String getReservation(final String reservationId) {
+        return reservationId;
+    }
+
+    @Override
+    public String wakeupCall(final String reservationId) {
+        for (int index = 1; index <= 5; index++) {
+            wakeupCallJob.runAsyncJob(index);
         }
         return "Finished!";
     }
 }
+

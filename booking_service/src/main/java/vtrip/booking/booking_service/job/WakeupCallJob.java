@@ -9,13 +9,20 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 public class WakeupCallJob {
+
+    // constructor mặc định để pass AtLeastOneConstructor
+    @SuppressWarnings("PMD.UnnecessaryConstructor")
+    public WakeupCallJob() {
+        super();
+    }
+
     @Async("taskExecutor")
-    @SuppressWarnings("PMD.DoNotUseThreads")
+    @SuppressWarnings({"PMD.DoNotUseThreads", "PMD.AvoidThreadSleep"})
     public void runAsyncJob(final int jobId) {
         log.info("Start call {}", jobId);
         try {
             TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
         log.info("Done call {}", jobId);

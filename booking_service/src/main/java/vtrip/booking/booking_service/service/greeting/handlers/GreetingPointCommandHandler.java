@@ -11,17 +11,20 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class GreetingPointCommandHandler {
-    private final GreetingPointQueryHandler greetingPointQueryHandler;
-    private final GreetingPointRepository greetingPointRepository;
+
+    private final GreetingPointQueryHandler queryHandler;
+    private final GreetingPointRepository repo;
 
     @Transactional
     public GreetingPoint create(final GreetingPoint greetingPoint) {
-        return greetingPointRepository.save(greetingPoint);
+        return repo.save(greetingPoint);
     }
 
     @Transactional
     public void deleteAll() {
-        final List<GreetingPoint> greetingPoints = greetingPointQueryHandler.getGreetingPoints();
-        greetingPointRepository.deleteAllInBatch(greetingPoints);
+        final List<GreetingPoint> list = queryHandler.getGreetingPoints();
+        if (!list.isEmpty()) {
+            repo.deleteAllInBatch(list);
+        }
     }
 }

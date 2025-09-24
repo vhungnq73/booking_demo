@@ -9,46 +9,46 @@ import vtrip.booking.booking_service.service.greeting.handlers.GreetingPointComm
 import vtrip.booking.booking_service.service.greeting.handlers.GreetingPointQueryHandler;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class GreetingService implements IGreetingService {
 
-    private final GreetingPointCommandHandler greetingPointCommandHandler;
-    private final GreetingPointQueryHandler greetingPointQueryHandler;
-    private final IRedisCacheProvider redisCacheProvider;
-    private final AppConfig appConfig;
+    private final GreetingPointCommandHandler cmdHandler;
+    private final GreetingPointQueryHandler queryHandler;
+    private final IRedisCacheProvider cache;
+    private final AppConfig cfg;
 
     @Override
     public String greet() {
-        // Giả sử AppConfig có method getName() trực tiếp
-        return "Hello from " + appConfig.getName();
+        return "Hello from " + cfg.getName();
     }
 
     @Override
     public List<GreetingPoint> getGreetingPoints() {
-        return greetingPointQueryHandler.getGreetingPoints();
+        return queryHandler.getGreetingPoints();
     }
 
     @Override
     public List<GreetingPoint> cleanGreetingPoints() {
-        greetingPointCommandHandler.deleteAll();
-        return greetingPointQueryHandler.getGreetingPoints();
+        cmdHandler.deleteAll();
+        return queryHandler.getGreetingPoints();
     }
 
     @Override
     public String manualCacheTest() {
-        String key = "greet:key";
-
-        // redisCacheProvider.get trả về String, nên dùng thẳng String
-        String cached = redisCacheProvider.get(key, String.class);
+        final String key = "greet:key";
+        final String cached = cache.get(key, String.class);
+        final String result;
         if (cached != null) {
-            return cached + " (cache)";
+            result = cached + " (cache)";
+        } else {
+            final String value = greet();
+            cache.set(key, value, 30);
+            result = value + " (fresh)";
         }
-
-        String value = greet();
-        redisCacheProvider.set(key, value, 30);
-        return value + " (fresh)";
+        return result;
     }
+
 }
+

@@ -6,6 +6,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CustomExternalConfigMapping implements IExternalConfigMappingProvider {
+
+    // constructor mặc định để pass AtLeastOneConstructor
+    @SuppressWarnings("PMD.UnnecessaryConstructor")
+    public CustomExternalConfigMapping() {
+        super();
+    }
+
     @Override
     public Map<String, String> prefixMapping() {
         final Map<String, String> map = new ConcurrentHashMap<>();
@@ -18,7 +25,7 @@ public class CustomExternalConfigMapping implements IExternalConfigMappingProvid
         final Map<String, String> map = new ConcurrentHashMap<>();
         map.put("kafka_topic_ops_transaction_account_transaction_account_create",
                 "spring.kafka.produce-topics.kafka_topic_ops_transaction_account_transaction_account_create");
-        map.put("app_name1","app.name");
+        map.put("app_name1", "app.name");
         return map;
     }
 }

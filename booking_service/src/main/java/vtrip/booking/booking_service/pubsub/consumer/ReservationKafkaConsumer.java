@@ -13,10 +13,16 @@ import java.util.Map;
 @Component
 public class ReservationKafkaConsumer {
 
+    // constructor mặc định để pass AtLeastOneConstructor
+    @SuppressWarnings("PMD.UnnecessaryConstructor")
+    public ReservationKafkaConsumer() {
+        super();
+    }
+
     @KafkaListener(
             topics = "dev_kafka_topic_ops_front_office_reservation",
             groupId = "dev_ops_transaction_account",
-            containerFactory = "autoCommitFactory",   // ✅ khớp bean trong KafkaConfig
+            containerFactory = "autoCommitFactory",
             concurrency = "3"
     )
     public void consumeReservation(final Map<String, Object> message) {
@@ -30,7 +36,7 @@ public class ReservationKafkaConsumer {
     @KafkaListener(
             topics = "dev_kafka_topic_ops_front_office_reservation_update",
             groupId = "dev_ops_transaction_account",
-            containerFactory = "manualCommitFactory",  // ✅ khớp bean trong KafkaConfig
+            containerFactory = "manualCommitFactory",
             concurrency = "2"
     )
     public void consumeReservationUpdate(@Payload final Object message, final Acknowledgment acknowledgment) {

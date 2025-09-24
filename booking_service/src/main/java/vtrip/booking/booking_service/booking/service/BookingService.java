@@ -17,13 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Service class for handling booking operations:
- * - Add/search products
- * - Create orders
- * - Get order details
- * - Call external APIs
- */
 @Service
 @RequiredArgsConstructor
 public class BookingService {
@@ -33,9 +26,6 @@ public class BookingService {
     private final IRedisCacheProvider redisCache;
     private final ExternalApiClient externalApiClient;
 
-    /**
-     * Add new product
-     */
     @Transactional
     public Product addProduct(final String sku, final String name, final BigDecimal price, final int stock) {
         final Product product = Product.builder()
@@ -47,20 +37,32 @@ public class BookingService {
         return productRepository.save(product);
     }
 
-    /**
-     * Search product by name (case insensitive)
-     */
     public List<Product> searchProducts(final String query) {
+        final List<Product> result;
         if (query == null || query.isBlank()) {
-            return productRepository.findAll();
+            result = productRepository.findAll();
+        } else {
+            result = productRepository.findByNameContainingIgnoreCase(query);
         }
-        return productRepository.findByNameContainingIgnoreCase(query);
+        return result;
     }
 
     /**
-     * Book products and create order
+     * Tạo OrderItem cho từng dòng đặt hàng.
+     * Suppress rule vì nghiệp vụ buộc phải khởi tạo object cho mỗi item.
      */
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+    private OrderItem createOrderItem(final CustomerOrder order, final Product product, final int quantity) {
+        return OrderItem.builder()
+                .order(order)
+                .product(product)
+                .quantity(quantity)
+                .unitPrice(product.getPrice())
+                .build();
+    }
+
     @Transactional
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public CustomerOrder book(final Map<String, Integer> itemsBySku) {
         final List<OrderItem> items = new ArrayList<>();
         final CustomerOrder order = CustomerOrder.builder()
@@ -68,7 +70,7 @@ public class BookingService {
                 .items(items)
                 .build();
 
-        for (Map.Entry<String, Integer> entry : itemsBySku.entrySet()) {
+        for (final Map.Entry<String, Integer> entry : itemsBySku.entrySet()) {
             final Product product = productRepository.findBySku(entry.getKey())
                     .orElseThrow(() -> new IllegalArgumentException("SKU not found: " + entry.getKey()));
 
@@ -78,34 +80,20 @@ public class BookingService {
             }
 
             product.setStock(product.getStock() - quantity);
-            final OrderItem orderItem = OrderItem.builder()
-                    .order(order)
-                    .product(product)
-                    .quantity(quantity)
-                    .unitPrice(product.getPrice())
-                    .build();
-            items.add(orderItem);
+            items.add(createOrderItem(order, product, quantity)); // object được tạo trong helper (đã suppress)
         }
 
-        // save metric to Redis
         redisCache.set("booking:last_order_size", String.valueOf(items.size()), 300L);
-
         return orderRepository.save(order);
     }
 
-    /**
-     * Get order by id
-     */
     public CustomerOrder getOrder(final long orderId) {
         return orderRepository.findById(orderId).orElseThrow(
                 () -> new IllegalArgumentException("Order not found with id: " + orderId)
         );
     }
 
-    /**
-     * Example calling external API
-     */
-    public String demoApiClientCall(final String id) {
-        return externalApiClient.getExampleData(id);
+    public String demoApiClientCall(final String requestId) {
+        return externalApiClient.getExampleData(requestId);
     }
 }

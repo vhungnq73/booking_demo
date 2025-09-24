@@ -12,10 +12,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GreetingPointQueryHandler {
 
-    private final GreetingPointRepository greetingPointRepository;
+    private final GreetingPointRepository repo;
 
     @Transactional(readOnly = true)
     public List<GreetingPoint> getGreetingPoints() {
-        return greetingPointRepository.findAll();
+        return repo.findAll();
     }
 }
+

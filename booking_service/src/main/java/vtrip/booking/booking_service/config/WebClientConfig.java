@@ -7,9 +7,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
-    //  constructor mặc định để pass AtLeastOneConstructor
+    /**
+     * Default constructor để pass rule AtLeastOneConstructor.
+     * Được suppress để tránh PMD.UnnecessaryConstructor.
+     */
+    @SuppressWarnings("PMD.UnnecessaryConstructor")
     public WebClientConfig() {
-        // default constructor
+        super();
     }
 
     @Bean

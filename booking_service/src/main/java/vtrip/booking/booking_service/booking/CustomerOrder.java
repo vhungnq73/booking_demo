@@ -19,7 +19,9 @@ public class CustomerOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SuppressWarnings("PMD.ShortVariable")
     private Long id;
+
 
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
@@ -31,6 +33,7 @@ public class CustomerOrder {
             fetch = FetchType.EAGER
     )
     @JsonManagedReference
-    @Builder.Default  // Giữ mặc định ArrayList khi không truyền từ builder
+    @Builder.Default
     private List<OrderItem> items = new ArrayList<>();
 }
+

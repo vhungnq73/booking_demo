@@ -20,9 +20,10 @@ import java.time.Instant;
 public class GreetingPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer pointId;   // đổi từ id → pointId
+
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Instant createdAt;
-
 }
+

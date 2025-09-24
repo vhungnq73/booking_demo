@@ -12,12 +12,13 @@ import reactor.core.publisher.Mono;
 public class ExternalApiClient {
 
     private final WebClient.Builder webClientBuilder;
-
-    private static final String BASE_URL = "https://jsonplaceholder.typicode.com"; // ví dụ external API
+    private static final String BASE_URL = "https://jsonplaceholder.typicode.com";
 
     public String getExampleData(final String resourceId) {
+        String result = "{}"; // Initialize with default value
+
         try {
-            return webClientBuilder.build()
+            final String apiResponse = webClientBuilder.build()
                     .get()
                     .uri(BASE_URL + "/posts/{id}", resourceId)
                     .retrieve()
@@ -27,9 +28,15 @@ public class ExternalApiClient {
                         return Mono.just("{}");
                     })
                     .block();
+
+            if (apiResponse != null) {
+                result = apiResponse;
+            }
         } catch (final Exception ex) {
             log.error("Unexpected error calling external API", ex);
-            return "{}";
+            // result remains as default "{}"
         }
+
+        return result; // Only one return statement
     }
 }
