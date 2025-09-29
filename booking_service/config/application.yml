@@ -1,11 +1,13 @@
 app:
   name: MyLocalApp
   greeting: "Hello from local config"
+
 thread-pool:
   core-size: 5
   max-size: 5
   queue-capacity: 1000
   name: AsyncThread
+
 spring:
   data:
     redis:
@@ -14,6 +16,7 @@ spring:
       host: redis.cache.dev.cloudhms.io
       port: 6379
       keyPrefix: 'vtrip-project-template:'
+
   kafka:
     retry-period-second: 3
     prefix-key: 'dev'
@@ -59,8 +62,6 @@ spring:
     bootstrap-servers: kafka-1.dev.cloudhms.io:9092, kafka-2.dev.cloudhms.io:9092, kafka-3.dev.cloudhms.io:9092
 
   ### Database Configuration
-  ### https://github.com/brettwooldridge/HikariCP
-  ### Supported source-type values: postgresql, mysql
   datasource:
     source-type: postgresql
     postgresql:
@@ -74,7 +75,7 @@ spring:
         max-lifetime: 1800000
         idle-timeout: 300000
         connection-timeout: 30000
-        maximum-pool-size : 10
+        maximum-pool-size: 10
         schema: template
       read:
         host: postgres-1-reader.db.dev.hulk.cloudhms.io
@@ -85,12 +86,10 @@ spring:
         pool-name: read
         schema: template
         read-only: true
+
   jpa:
     open-in-view: false
-    show-sql: true
-
-
-
+    show-sql: false   # Tắt log SQL thô
 
 # --- booking service defaults for local dev ---
 spring:
@@ -110,3 +109,10 @@ spring:
     init:
       mode: always
       schema-locations: classpath:schema.sql
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    org.hibernate.SQL: WARN                # giảm log SQL
+    org.hibernate.type.descriptor.sql: WARN
+
