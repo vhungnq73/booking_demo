@@ -18,7 +18,8 @@
     <description>Simple Booking Service</description>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
+        <pmdVersion>7.16.0</pmdVersion>
     </properties>
 
     <repositories>
@@ -88,7 +89,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
             <exclusions>
-                <!-- loại bỏ JUnit4 để chắc chắn chỉ chạy JUnit5 -->
                 <exclusion>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
@@ -117,7 +117,27 @@
             <version>7.4</version>
         </dependency>
 
-
+        <!-- PMD dependencies để support JDK 25 -->
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-core</artifactId>
+            <version>${pmdVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-java</artifactId>
+            <version>${pmdVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-javascript</artifactId>
+            <version>${pmdVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-jsp</artifactId>
+            <version>${pmdVersion}</version>
+        </dependency>
 
     </dependencies>
 
