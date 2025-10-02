@@ -51,7 +51,6 @@ public class BookingService {
      * Tạo OrderItem cho từng dòng đặt hàng.
      * Suppress rule vì nghiệp vụ buộc phải khởi tạo object cho mỗi item.
      */
-    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     private OrderItem createOrderItem(final CustomerOrder order, final Product product, final int quantity) {
         return OrderItem.builder()
                 .order(order)

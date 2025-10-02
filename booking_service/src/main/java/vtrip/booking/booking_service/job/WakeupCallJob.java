@@ -17,7 +17,6 @@ public class WakeupCallJob {
     }
 
     @Async("taskExecutor")
-    @SuppressWarnings({"PMD.DoNotUseThreads", "PMD.AvoidThreadSleep"})
     public void runAsyncJob(final int jobId) {
         log.info("Start call {}", jobId);
         try {
